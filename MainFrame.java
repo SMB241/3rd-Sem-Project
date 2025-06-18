@@ -1,4 +1,3 @@
-// MainFrame.java
 import javax.swing.*;
 import java.awt.*;
 
@@ -28,14 +27,22 @@ public class MainFrame extends JFrame {
         mainPanel.add(new LoginPanel(this, patientManager), "Login");
         mainPanel.add(new SignUpPanel(this, patientManager), "SignUp");
         mainPanel.add(new DashboardPanel(this), "Dashboard");
-        mainPanel.add(new TreatmentPanel(this), "Treatments");
+        mainPanel.add(new TreatmentPanel(this, patientManager), "Treatments");
         mainPanel.add(new BillingPanel(this, patientManager), "Billing");
-        mainPanel.add(new AppointmentPanel(this, patientManager), "Calendar");
         
         showPanel("Login");
     }
 
     public void showPanel(String panelName) {
         cardLayout.show(mainPanel, panelName);
+    }
+
+    public void addPanel(JPanel panel, String name) {
+        mainPanel.add(panel, name);
+        cardLayout.show(mainPanel, name);
+    }
+
+    public PatientManager getPatientManager() {
+        return patientManager;
     }
 }

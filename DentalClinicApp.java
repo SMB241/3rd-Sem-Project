@@ -1,4 +1,3 @@
-// DentalClinicApp.java
 import javax.swing.*;
 
 public class DentalClinicApp {

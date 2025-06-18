@@ -1,4 +1,3 @@
-// DashboardPanel.java
 import javax.swing.*;
 import java.awt.*;
 

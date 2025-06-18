@@ -28,6 +28,7 @@ public class SignUpPanel extends JPanel {
         JTextField firstNameField = new JTextField();
         JTextField lastNameField = new JTextField();
         JTextField emailField = new JTextField();
+        emailField.setPreferredSize(new Dimension(200, 30)); // width: 200px, height: 30px
         JPasswordField passwordField = new JPasswordField();
         JTextField ageField = new JTextField();
         JTextField dobField = new JTextField();
@@ -75,8 +76,8 @@ public class SignUpPanel extends JPanel {
     }
 
     private void handleRegistration(String firstName, String lastName, String email, String password,
-                                  String ageStr, String dobStr, String sex, String contact,
-                                  String status, String address) {
+                                String ageStr, String dobStr, String sex, String contact,
+                                String status, String address) {
         // Validate required fields
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             UIUtils.showError(this, "First name, last name, email and password are required!");

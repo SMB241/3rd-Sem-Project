@@ -1,4 +1,3 @@
-// DatabaseConnector.java
 import java.sql.*;
 
 public class DatabaseConnector {
@@ -14,7 +13,7 @@ public class DatabaseConnector {
         try (Connection conn = getConnection()) {
             Statement stmt = conn.createStatement();
             
-            // Create tables if they don't exist
+            // Create patients table
             stmt.execute("CREATE TABLE IF NOT EXISTS patients (" +
                 "patient_id INT AUTO_INCREMENT PRIMARY KEY," +
                 "first_name VARCHAR(50) NOT NULL," +
@@ -28,12 +27,14 @@ public class DatabaseConnector {
                 "status VARCHAR(20)," +
                 "address TEXT)");
 
+            // Create treatments table
             stmt.execute("CREATE TABLE IF NOT EXISTS treatments (" +
-                "treatment_id INT AUTO_INCREMENT PRIMARY KEY," +
+                "treatment_id INT PRIMARY KEY," +
                 "name VARCHAR(100) NOT NULL," +
                 "category VARCHAR(50) NOT NULL," +
                 "price DECIMAL(10,2) NOT NULL)");
 
+            // Create appointments table
             stmt.execute("CREATE TABLE IF NOT EXISTS appointments (" +
                 "appointment_id INT AUTO_INCREMENT PRIMARY KEY," +
                 "patient_id INT NOT NULL," +
@@ -43,13 +44,24 @@ public class DatabaseConnector {
                 "FOREIGN KEY (patient_id) REFERENCES patients(patient_id)," +
                 "FOREIGN KEY (treatment_id) REFERENCES treatments(treatment_id))");
 
-            // Insert default treatments if none exist
+            stmt.execute("CREATE TABLE IF NOT EXISTS user_treatments (" +
+            "patient_id INT NOT NULL," +
+            "treatment_id INT NOT NULL," +
+            "treatment_name VARCHAR(100) NOT NULL," +  // New column
+            "treatment_price DECIMAL(10,2) NOT NULL," + // New column
+            "PRIMARY KEY (patient_id, treatment_id)," +
+            "FOREIGN KEY (patient_id) REFERENCES patients(patient_id)," +
+            "FOREIGN KEY (treatment_id) REFERENCES treatments(treatment_id))");
+
+            // Insert default treatments
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM treatments");
             if (rs.next() && rs.getInt(1) == 0) {
-                stmt.execute("INSERT INTO treatments (name, category, price) VALUES " +
-                    "('Dental Consultation', 'Preventive', 50.00)," +
-                    "('Teeth Cleaning', 'Preventive', 80.00)," +
-                    "('Dental Fillings', 'Restorative', 120.00)");
+                stmt.execute("INSERT INTO treatments (treatment_id, name, category, price) VALUES " +
+                    "(1, 'Dental Consultation', 'Preventive', 50.00)," +
+                    "(2, 'Teeth Cleaning', 'Preventive', 80.00)," +
+                    "(3, 'Dental Fillings', 'Restorative', 120.00)," +
+                    "(4, 'Root Canal Treatment', 'Restorative', 200.00)," +
+                    "(5, 'Teeth Whitening', 'Cosmetic', 150.00)");
             }
         }
     }

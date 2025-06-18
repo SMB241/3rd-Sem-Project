@@ -1,7 +1,6 @@
 // LoginPanel.java
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
 public class LoginPanel extends JPanel {
@@ -24,6 +23,7 @@ public class LoginPanel extends JPanel {
         form.setBackground(new Color(240, 248, 255));
 
         JTextField emailField = new JTextField();
+        
         JPasswordField passwordField = new JPasswordField();
 
         form.add(new JLabel("Email:"));
