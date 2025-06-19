@@ -36,24 +36,23 @@ public class DatabaseConnector {
 
             // Create appointments table
             stmt.execute("CREATE TABLE IF NOT EXISTS appointments (" +
-                "appointment_id INT AUTO_INCREMENT PRIMARY KEY," +
-                "patient_id INT NOT NULL," +
-                "treatment_id INT NOT NULL," +
-                "appointment_date DATE NOT NULL," +
-                "is_paid BOOLEAN DEFAULT FALSE," +
-                "FOREIGN KEY (patient_id) REFERENCES patients(patient_id)," +
-                "FOREIGN KEY (treatment_id) REFERENCES treatments(treatment_id))");
+            "appointment_id INT AUTO_INCREMENT PRIMARY KEY," +
+            "patient_id INT NOT NULL," +
+            "treatment_id INT NOT NULL," +
+            "appointment_date DATE NOT NULL," +
+            "is_paid VARCHAR(50) DEFAULT 'not_paid'," + 
+            "FOREIGN KEY (patient_id) REFERENCES patients(patient_id)," +
+            "FOREIGN KEY (treatment_id) REFERENCES treatments(treatment_id))");
 
             stmt.execute("CREATE TABLE IF NOT EXISTS user_treatments (" +
             "patient_id INT NOT NULL," +
             "treatment_id INT NOT NULL," +
-            "treatment_name VARCHAR(100) NOT NULL," +  // New column
-            "treatment_price DECIMAL(10,2) NOT NULL," + // New column
+            "treatment_name VARCHAR(100) NOT NULL," + 
+            "treatment_price DECIMAL(10,2) NOT NULL," + 
             "PRIMARY KEY (patient_id, treatment_id)," +
             "FOREIGN KEY (patient_id) REFERENCES patients(patient_id)," +
             "FOREIGN KEY (treatment_id) REFERENCES treatments(treatment_id))");
 
-            // Insert default treatments
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM treatments");
             if (rs.next() && rs.getInt(1) == 0) {
                 stmt.execute("INSERT INTO treatments (treatment_id, name, category, price) VALUES " +

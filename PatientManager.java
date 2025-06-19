@@ -138,7 +138,7 @@ public class PatientManager {
                 return rs.getDouble("price");
             }
         }
-        return 0.0; // or throw an exception
+        return 0.0;
     }
 
     public List<Appointment> getPatientAppointments(int patientId) throws SQLException {
@@ -159,7 +159,7 @@ public class PatientManager {
                     rs.getInt("patient_id"),
                     rs.getInt("treatment_id"),
                     rs.getDate("appointment_date"),
-                    rs.getBoolean("is_paid"),
+                    rs.getString("is_paid"),
                     rs.getString("treatment_name")
                 ));
             }
@@ -167,12 +167,21 @@ public class PatientManager {
         return appointments;
     }
 
-        public void markAppointmentAsPaid(int appointmentId) throws SQLException {
+            public void markAppointmentAsPaid(int appointmentId) throws SQLException {
+        System.out.println("Marking appointment " + appointmentId + " as paid");
+        
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                "UPDATE appointments SET is_paid = TRUE WHERE appointment_id = ?")) {
+                "UPDATE appointments SET is_paid = 'paid' WHERE appointment_id = ?")) {
+            
             stmt.setInt(1, appointmentId);
-            stmt.executeUpdate();
+            int rowsUpdated = stmt.executeUpdate();
+            
+            if (rowsUpdated == 0) {
+                System.out.println("Warning: No appointment found with ID " + appointmentId);
+            } else {
+                System.out.println("Successfully marked appointment as paid");
+            }
         }
     }
 

@@ -5,11 +5,11 @@ public class Appointment {
     private int patientId;
     private int treatmentId;
     private Date appointmentDate;
-    private boolean isPaid;
+    private String isPaid;
     private String treatmentName;
 
     public Appointment(int appointmentId, int patientId, int treatmentId, 
-                      Date appointmentDate, boolean isPaid, String treatmentName) {
+                      Date appointmentDate, String isPaid, String treatmentName) {
         this.appointmentId = appointmentId;
         this.patientId = patientId;
         this.treatmentId = treatmentId;
@@ -23,6 +23,6 @@ public class Appointment {
     public int getPatientId() { return patientId; }
     public int getTreatmentId() { return treatmentId; }
     public Date getAppointmentDate() { return appointmentDate; }
-    public boolean isPaid() { return isPaid; }
+    public String isPaid() { return isPaid; }
     public String getTreatmentName() { return treatmentName; }
 }

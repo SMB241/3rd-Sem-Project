@@ -83,6 +83,7 @@ public class AppointmentPanel extends JPanel {
                     patientManager.getCurrentPatientId(),
                     treatmentId,
                     selectedDate
+
                 );
             }
 

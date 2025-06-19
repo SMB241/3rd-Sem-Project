@@ -3,6 +3,7 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BillingPanel extends JPanel {
     private PatientManager patientManager;
@@ -21,6 +22,7 @@ public class BillingPanel extends JPanel {
         billingInfo = new JTextArea();
         billingInfo.setEditable(false);
         billingInfo.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        billingInfo.setMargin(new Insets(10, 10, 10, 10));
         refreshAppointments();
 
         JPanel content = new JPanel(new BorderLayout());
@@ -64,7 +66,7 @@ public class BillingPanel extends JPanel {
             
             for (Appointment appt : appointments) {
                 double price = patientManager.getTreatmentPrice(appt.getTreatmentId());
-                if (!appt.isPaid()) {
+                if ("not_paid".equalsIgnoreCase(appt.isPaid())) { 
                     totalDue += price;
                 }
                 
@@ -72,8 +74,8 @@ public class BillingPanel extends JPanel {
                   .append(" - ").append(sdf.format(appt.getAppointmentDate()))
                   .append(" - ").append(appt.getTreatmentName())
                   .append(" ($").append(String.format("%.2f", price)).append(")")
-                  .append(appt.isPaid() ? " (Paid)" : " (Due)")
-                  .append("\n");
+                  .append(" - Status: ").append(appt.isPaid().equalsIgnoreCase("paid") ? "Paid" : "Due")
+                  .append("\n\n");
             }
             
             sb.append("\nTotal Amount Due: $").append(String.format("%.2f", totalDue));
@@ -84,9 +86,43 @@ public class BillingPanel extends JPanel {
     }
 
     private void markAsPaid() {
-        // Implement payment logic here
-        JOptionPane.showMessageDialog(this, 
-            "Payment functionality will be implemented here",
-            "Payment", JOptionPane.INFORMATION_MESSAGE);
+    try {
+        List<Appointment> appointments = patientManager.getPatientAppointments(
+            patientManager.getCurrentPatientId());
+        
+        Appointment unpaidAppt = null;
+        for (Appointment a : appointments) {
+            if ("not_paid".equalsIgnoreCase(a.isPaid())) {
+                unpaidAppt = a;
+                break;
+            }
+        }
+        
+        if (unpaidAppt == null) {
+            JOptionPane.showMessageDialog(this, 
+                "No unpaid appointments found",
+                "Payment", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Confirm payment
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Mark appointment #" + unpaidAppt.getAppointmentId() + 
+            " (" + unpaidAppt.getTreatmentName() + ") as paid?",
+            "Confirm Payment",
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            patientManager.markAppointmentAsPaid(unpaidAppt.getAppointmentId());
+            refreshAppointments();
+            JOptionPane.showMessageDialog(this, 
+                "Appointment marked as paid",
+                "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+            "Error updating payment: " + e.getMessage(),
+            "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
 }
